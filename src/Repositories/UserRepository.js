@@ -4,14 +4,17 @@ import {Op} from "sequelize";
 export class UserRepository {
     static async create(body) {
         const deconstructedBody = {...body};
+        console.log({...deconstructedBody})
         let user;
         try {
             user = await User.build({
-                deconstructedBody
+                ...deconstructedBody
             });
         } catch (err) {
             console.log(err);
         }
+        console.log('USER: ')
+        console.log(user.dataValues)
         await user.save();
         return user;
     }
@@ -57,6 +60,9 @@ export class UserRepository {
             })
         } catch {
             console.log('Cannot find user with such username');
+            return null;
+        }
+        if (!user){
             return null;
         }
         return user.dataValues;

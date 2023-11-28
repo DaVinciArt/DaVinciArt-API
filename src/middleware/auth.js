@@ -14,11 +14,13 @@ export async function register(req,res){
     if(username && password){
         const userExists = await UserRepository.getUserByNameOrId(username)
         if(userExists) return res.status(404).send('Username already exists')
+        console.log('XUI: ')
         const registerBody = {
             ...req.body,
             password: hashPassword(password),
             balance: 0
         }
+        console.log({...registerBody})
         const user = (await UserRepository.create(registerBody))
 
         if (!user) res.status(404).send('Cannot create user')
