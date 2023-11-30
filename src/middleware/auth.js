@@ -15,13 +15,12 @@ export async function register(req,res){
         let avatar = ' '
         const path = req.file.path;
         if (path) {
-                const result = await cloudinary.uploader.upload(req.file.path, {folder:"avatars/"});
+                const result = await cloudinary.uploader.upload(path, {folder:"avatars/"});
                 fs.unlink(path, (err) => {
                     if (err) console.error("Error deleting temp file", err);
                 });
                 avatar = result.secure_url;
         }
-        console.log(avatar)
         const userData = {
             email: req.body.email,
             first_name: req.body.first_name,
@@ -133,6 +132,6 @@ export async function changePassword(req, res){
 }
 
 function filterUserForToken(user){
-    const {avatar, iat, exp, createdAt, updatedAt, ...rest} = user;
+    const {iat, exp, createdAt, updatedAt, ...rest} = user;
     return rest;
 }
