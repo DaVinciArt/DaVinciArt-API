@@ -4,34 +4,54 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import {UserRepository} from "../Repositories/UserRepository.js";
+import cloudinary from '../index.js'
+import * as fs from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '../config/.env') })
 export async function register(req,res){
-    const {username, password} = req.body;
-    if(username && password){
-        const userExists = await UserRepository.getUserByNameOrId(username)
-        if(userExists) return res.status(404).send('Username already exists')
-        console.log('XUI: ')
-        const registerBody = {
-            ...req.body,
-            password: hashPassword(password),
-            balance: 0
+        let avatar = ' '
+        const path = req.file.path;
+        if (path) {
+                const result = await cloudinary.uploader.upload(req.file.path, {folder:"avatars/"});
+                fs.unlink(path, (err) => {
+                    if (err) console.error("Error deleting temp file", err);
+                });
+                avatar = result.secure_url;
         }
-        console.log({...registerBody})
-        const user = (await UserRepository.create(registerBody))
+        console.log(avatar)
+        const userData = {
+            email: req.body.email,
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            password: req.body.password,
+            username: req.body.username,
+            avatar: avatar
+        };
+        const {username, password} = userData;
+        if(username && password){
+            const userExists = await UserRepository.getUserByNameOrId(username)
+            if(userExists) return res.status(404).send('Username already exists')
+            const registerBody = {
+                ...userData,
+                password: hashPassword(password),
+                balance: 0
+            }
+            console.log((username))
+            const user = (await UserRepository.create(registerBody))
 
-        if (!user) res.status(404).send('Cannot create user')
+            if (!user) res.status(404).send('Cannot create user')
 
-        console.log(`${username} was saved to the Database`)
-        const token = createTokens(user, res)
-        return res.status(201).json({accessToken: token})
-    }
-    else{
-        return res.status(404).send('Cannot register')
-    }
+            console.log(`${username} was saved to the Database`)
+            console.log({...user})
+            const token = createTokens(user, res)
+            return res.status(201).json({accessToken: token})
+        }
+        else{
+            return res.status(404).send('Cannot register')
+        }
 }
 
 export async function login(req, res){
@@ -49,15 +69,14 @@ export async function login(req, res){
 }
 
 export function refresh(req,res){
-    const refreshToken = req.cookies.refreshToken;
+    const {refreshToken} = req.body;
     if(!refreshToken) res.status(401).send('Access Denied: No token provided!');
     try {
-
         const user = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
 
         const accessToken = jwt.sign(user, process.env.SECRET, { expiresIn: '1h' });
 
-        res.json({ accessToken });
+        res.json({ accessToken: accessToken });
     } catch (error) {
         res.status(403).send('Invalid Refresh Token');
     }

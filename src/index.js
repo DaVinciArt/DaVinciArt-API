@@ -12,12 +12,13 @@ import {v2 as cloudinary} from 'cloudinary';
 
 dotenv.config();
 cloudinary.config({
-    cloud_name: 'dncmx4fay',
-    api_key: '816764534661459',
-    api_secret: '***************************'
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API,
+    api_secret: process.env.CLOUDINARY_SECRET,
+    debug: true
 });
 
-
+export default cloudinary
 try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
@@ -34,7 +35,7 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize({}));
 
@@ -62,6 +63,5 @@ app.use('/user/collections', authToken, paintingsRouter);
 app.use('/user', authToken, userRouter);
 
 app.listen(PORT, ()=> console.log(`Running server on ${PORT}`));
-
 
 

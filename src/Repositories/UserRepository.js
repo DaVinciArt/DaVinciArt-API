@@ -16,7 +16,7 @@ export class UserRepository {
         console.log('USER: ')
         console.log(user.dataValues)
         await user.save();
-        return user;
+        return user.dataValues;
     }
 
 

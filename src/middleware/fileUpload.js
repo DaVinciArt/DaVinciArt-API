@@ -1,16 +1,20 @@
-/*import multer  from 'multer'
+import multer  from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const storage = multer.diskStorage({
-    destination: function (req, cb) {
-        cb(null, 'uploads/');
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../uploads/'));
     },
-    filename: function (req, cb) {
-        cb(null, req.file.fieldname + '-' + Date.now());
+    filename: function (req, file, cb) {
+        const fileExt = path.extname(file.originalname);
+        const filename = 'newAvatar-' + Date.now() + fileExt;
+        cb(null, filename);
     }
 });
 
 const upload = multer({ storage: storage });
 
-module.exports = {
-    uploadSingle: upload.single('image'),
-};*/
+export const uploadSingle = upload.single('avatar');
