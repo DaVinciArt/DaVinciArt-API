@@ -1,6 +1,5 @@
 import {UserRepository} from "../Repositories/UserRepository.js";
 
-
 export async function updateUser(req, res){
     if(await UserRepository.update(req.body.username,req.body)){
         return res.status(201).send('Updated user successfully');

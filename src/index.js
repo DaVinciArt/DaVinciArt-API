@@ -6,7 +6,7 @@ import session from "express-session";
 import {authToken} from "./middleware/auth.js";
 import passport from "passport";
 import dotenv from 'dotenv';
-import {paintingsRouter} from "./routes/painting.js";
+import {collectionRouter} from "./routes/collectionRouter.js";
 import cookieParser from 'cookie-parser';
 import {v2 as cloudinary} from 'cloudinary';
 
@@ -26,7 +26,7 @@ try {
     console.error('Unable to connect to the databaseSchemes:', error);
 }
 
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ alter: false }).then(() => {
     console.log('Models are synced with the database');
 });
 
@@ -59,7 +59,6 @@ app.use((req,res,next) =>
     }
 })
 app.use('/auth', authRouter);
-app.use('/user/collections', authToken, paintingsRouter);
 app.use('/user', authToken, userRouter);
 
 app.listen(PORT, ()=> console.log(`Running server on ${PORT}`));

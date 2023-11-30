@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const fileExt = path.extname(file.originalname);
-        const filename = 'newAvatar-' + Date.now() + fileExt;
+        const filename = 'newImage-' + Date.now() + fileExt;
         cb(null, filename);
     }
 });
@@ -18,3 +18,4 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 export const uploadSingle = upload.single('avatar');
+export const uploadAny = upload.any()

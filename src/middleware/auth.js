@@ -21,24 +21,16 @@ export async function register(req,res){
                 });
                 avatar = result.secure_url;
         }
-        const userData = {
-            email: req.body.email,
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            password: req.body.password,
-            username: req.body.username,
-            avatar: avatar
-        };
-        const {username, password} = userData;
+        const {username, password} = req.body;
         if(username && password){
             const userExists = await UserRepository.getUserByNameOrId(username)
             if(userExists) return res.status(404).send('Username already exists')
             const registerBody = {
-                ...userData,
+                ...req.body,
                 password: hashPassword(password),
-                balance: 0
+                balance: 0,
+                avatar: avatar
             }
-            console.log((username))
             const user = (await UserRepository.create(registerBody))
 
             if (!user) res.status(404).send('Cannot create user')
@@ -131,7 +123,7 @@ export async function changePassword(req, res){
     return res.status(404).send('Cannot update password');
 }
 
-function filterUserForToken(user){
+export function filterUserForToken(user){
     const {iat, exp, createdAt, updatedAt, ...rest} = user;
     return rest;
 }

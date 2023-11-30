@@ -85,9 +85,6 @@ export class Review extends Model {}
                 type: DataTypes.TEXT,
                 allowNull: false
             },
-            rate:{
-                type: DataTypes.SMALLINT
-            }
         },{sequelize,
             modelName: 'Review'});
 
@@ -114,7 +111,7 @@ export class Collection extends Model {}
                 type: DataTypes.TEXT,
                 allowNull: false
             },
-            preview_picture: {
+            preview_image_url: {
                 type: DataTypes.TEXT,
                 allowNull: false
             },
@@ -127,7 +124,7 @@ export class Collection extends Model {}
                 allowNull: false,
             },
             price: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: false
             }
         },{sequelize,
@@ -156,7 +153,7 @@ Painting.init({
         type: DataTypes.TEXT,
         allowNull: false
     },
-    preview_picture: {
+    image_url: {
         type: DataTypes.TEXT,
         allowNull: false
     }
@@ -193,28 +190,30 @@ Purchase.init({
 },{sequelize,
     modelName: 'Transaction'});
 
-User.hasMany(Review, {
-    foreignKey: 'commentator_id'
+User.Comments = User.hasMany(Review, {
+    foreignKey: 'commentator_id',
+    as: 'commentator'
 });
-User.hasMany(Review, {
-    foreignKey: 'receiver_id'
+User.Reviews = User.hasMany(Review, {
+    foreignKey: 'receiver_id',
+    as: 'receiver'
 })
-User.hasMany(Collection, {
+User.Collections = User.hasMany(Collection, {
     foreignKey: 'author_id'
 })
-User.hasMany(Purchase,{
+User.Purchases = User.hasMany(Purchase,{
     foreignKey:'purchase_id'
 })
-Purchase.hasOne(Collection,{
+Purchase.Collection = Purchase.hasOne(Collection,{
     foreignKey:'collection_id'
 })
-Collection.hasMany(Painting,{
+Collection.Paintings = Collection.hasMany(Painting,{
     foreignKey: 'collection_id'
 })
-Painting.belongsTo(Collection)
-Review.belongsTo(User)
-Collection.belongsTo(User)
-Collection.belongsTo(Purchase)
-Painting.belongsTo(Collection)
+Painting.Collection = Painting.belongsTo(Collection)
+Review.Receiver = Review.belongsTo(User, {foreignKey: 'receiver_id', as: 'receiver'})
+Review.Commentator = Review.belongsTo(User, {foreignKey:'commentator_id', as: 'commentator'})
+Collection.User = Collection.belongsTo(User)
+Collection.Purchase = Collection.belongsTo(Purchase)
 
 export {sequelize}
