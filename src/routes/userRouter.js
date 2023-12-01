@@ -14,4 +14,3 @@ userRouter.post('changePassword',changePassword);
 
 userRouter.get('/:userId/getAllComments', getAllComments)
 userRouter.post('/:userId/comment', addComment)
-userRouter.post('/:userId/collection/add',uploadAny,createCollection);

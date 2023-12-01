@@ -1,29 +1,58 @@
 import {Collection, Painting} from "../databaseSchemes/dataScheme.js";
 import {Op} from "sequelize";
+import {UserRepository} from "./UserRepository.js";
 
 export class CollectionRepository {
-    static async create(body, paintings) {
-        const deconstructedBody = {...body};
-        console.log(`Body: \n${{...deconstructedBody}}`)
+    static async create(body) {
+        const deconstructedBody = {...body, paintings : [{...body.paintings, upload_date: body.upload_date}]};
+
+        deconstructedBody.paintings = deconstructedBody.paintings.flatMap(item => {
+            return Object.keys(item).filter(key => key !== 'upload_date').map(key => {
+                const painting = item[key];
+                return { ...painting, upload_date: item.upload_date };
+            });
+        });
+        console.log(`Body: \n${JSON.stringify(deconstructedBody)}`)
         let collection;
         try {
             collection = await Collection.create({
-                ...deconstructedBody,
-                paintings:paintings,
-            },{
-                include:[Painting]
+                ...deconstructedBody
             });
-        } catch (err) {
-            console.log(err);
+            console.log(`Body: \n${JSON.stringify({
+                collection_id: collection.id,
+                ...deconstructedBody.paintings[0],
+                image_url: deconstructedBody.image_url
+            })}`)
+            for (let i =0;i<deconstructedBody.paintings.length;i++){
+                try{
+                    await Painting.create({
+                        collection_id: collection.id,
+                        ...deconstructedBody.paintings[i],
+                        image_url: deconstructedBody.paintings[i].image_url
+                    })
+                }catch(err){
+                    console.log(err)
+                }
+            }
         }
+        catch (err)
+            {
+                console.log(err);
+            }
+
         console.log('Collection: ')
-        console.log(collection)
+        console.log(collection.dataValues)
         return collection.dataValues;
     }
 
 
     static async getCollectionByNameOrId(name, id = undefined) {
-        return (await this.search(name, id));
+        return (await this.search([name, id]));
+    }
+
+    static async getCollectionByUserId(userId){
+        return await this.searchForAll(userId)
+
     }
 
     static async delete(id) {
@@ -45,17 +74,7 @@ export class CollectionRepository {
         return true;
     }
 
-    static async search(name, id, authorId) {
-        const conditions = [];
-        if (id !== undefined) {
-            conditions.push({ id });
-        }
-        if(authorId !== undefined){
-            conditions.push({authorId})
-        }
-        if (name !== undefined) {
-            conditions.push({ name: name });
-        }
+    static async search(conditions = [0]) {
         let collection = {};
         try {
             collection = await Collection.findOne({
@@ -71,5 +90,32 @@ export class CollectionRepository {
             return null;
         }
         return collection.dataValues;
+    }
+    static async searchForAll(conditions = [0]) {
+        let result = []
+        let dbResponse = {}
+        try {
+            dbResponse = await Collection.findAll({
+                where: {
+                    author_id: conditions
+                },
+                include: [{
+                    model: Painting,
+                }]
+            })
+        } catch {
+            console.log('Cannot find collection with this credentials');
+            return null;
+        }
+        if (!dbResponse){
+            return null;
+        }
+        console.log(dbResponse)
+        for (const collection in dbResponse){
+            console.log(collection)
+            result.push(dbResponse[collection].dataValues)
+        }
+        console.log(result)
+        return result
     }
 }

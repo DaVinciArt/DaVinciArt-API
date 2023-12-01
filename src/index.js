@@ -60,6 +60,7 @@ app.use((req,res,next) =>
 })
 app.use('/auth', authRouter);
 app.use('/user', authToken, userRouter);
+app.use('/user/collection', authToken, collectionRouter)
 
 app.listen(PORT, ()=> console.log(`Running server on ${PORT}`));
 
