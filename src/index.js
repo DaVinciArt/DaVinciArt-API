@@ -26,7 +26,7 @@ try {
     console.error('Unable to connect to the databaseSchemes:', error);
 }
 
-sequelize.sync({ alter: false }).then(() => {
+sequelize.sync({ alter: true }).then(() => {
     console.log('Models are synced with the database');
 });
 

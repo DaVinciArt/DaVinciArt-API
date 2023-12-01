@@ -23,6 +23,24 @@ export class UserRepository {
     static async getUserByNameOrId(username, id = undefined) {
         return (await this.search(username, id));
     }
+    static async getUserById(id,attributes){
+        let user = {};
+        try {
+            user = await User.findOne({
+                where: {
+                    id
+                },
+                attributes: attributes
+            })
+        } catch {
+            console.log('Cannot find user with such username');
+            return null;
+        }
+        if (!user){
+            return null;
+        }
+        return user.dataValues;
+    }
 
     static async delete(username) {
         let user = this.search(username);
@@ -43,19 +61,12 @@ export class UserRepository {
         return true;
     }
 
-    static async search(username, id) {
-        const conditions = [];
-        if (id !== undefined) {
-            conditions.push({ id });
-        }
-        if (username !== undefined) {
-            conditions.push({ username });
-        }
+    static async search(conditions) {
         let user = {};
         try {
             user = await User.findOne({
                 where: {
-                    [Op.or]: conditions
+                    conditions
                 }
             })
         } catch {

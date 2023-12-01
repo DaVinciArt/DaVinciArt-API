@@ -46,8 +46,8 @@ export class CollectionRepository {
     }
 
 
-    static async getCollectionByNameOrId(name, id = undefined) {
-        return (await this.search([name, id]));
+    static async getCollectionWithPainting(id) {
+        return (await this.searchWithInclude({id},{Painting}));
     }
 
     static async getCollectionByUserId(userId){
@@ -81,6 +81,22 @@ export class CollectionRepository {
                 where: {
                     [Op.or]: conditions
                 }
+            })
+        } catch {
+            console.log('Cannot find collection with this credentials');
+            return null;
+        }
+        if (!collection){
+            return null;
+        }
+        return collection.dataValues;
+    }
+    static async searchWithInclude(where, include) {
+        let collection = {};
+        try {
+            collection = await Collection.findOne({
+                where,
+                include
             })
         } catch {
             console.log('Cannot find collection with this credentials');

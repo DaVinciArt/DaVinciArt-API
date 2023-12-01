@@ -1,31 +1,42 @@
 import {CollectionRepository} from "../Repositories/CollectionRepository.js";
 import cloudinary from '../index.js'
 import * as fs from "fs";
+import {UserRepository} from "../Repositories/UserRepository.js";
 
 export async function createCollection(req,res){
     const userId = req.params.userId;
-    const body = {...req.body}
+    const user = await UserRepository.getUserById(userId, ['username'])
+    console.log(user.username)
+    const body = {...req.body, author_name: user.username}
     console.log(`RequestBody: ${JSON.stringify(body)}`)
-    const collectionBody = await createCollectionBody(req, userId)
+    const collectionBody = await createCollectionBody(req, userId,user.username)
     console.log(collectionBody)
     if(!collectionBody) res.status(400).send({message: 'Not enough data to create collection'})
     const collection = await CollectionRepository.create(collectionBody)
     if(!collection) return res.status(400).send({message:'Cannot create this collection'})
-    return res.status(201)
-
+    return res.sendStatus(200)
 }
 
-export async function getById(req,res){
+export async function getAllById(req, res){
     const body = await CollectionRepository.getCollectionByUserId(req.params.userId)
+    if(!body) return res.sendStatus(404)
     console.log(`Body: ${body}`)
     return res.status(200).json(body)
 }
-async function createCollectionBody(req, userId){
+
+export async function getWithPainting(req,res){
+    const body = await CollectionRepository.getCollectionWithPainting(req.params.userId)
+    if(!body) return res.sendStatus(404)
+    console.log(`Body: ${body}`)
+    return res.status(200).json(body)
+}
+async function createCollectionBody(req, userId, username){
     const tags = req.body.tags.split(' ')
     const collection = {
         ...req.body,
         tags: tags,
         author_id: userId,
+        author_name:username,
         price: +req.body.price,
         paintings: [],
         status: 'on hold',
