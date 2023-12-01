@@ -1,6 +1,5 @@
 import {Collection, Painting} from "../databaseSchemes/dataScheme.js";
 import {Op} from "sequelize";
-import {UserRepository} from "./UserRepository.js";
 
 export class CollectionRepository {
     static async create(body) {

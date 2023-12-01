@@ -105,7 +105,7 @@ async function createCollectionBody(req) {
                 });
                 uploadPromises.push(uploadPromise);
             } else {
-                const match = /paintings\[(\d+)\]\[image\]/.exec(file.fieldname);
+                const match = /paintings\[(\d+)]\[image]/.exec(file.fieldname);
                 if (match) {
                     let uploadPromise = uploadPicture(file.path).then(imageUrl => {
                         const index = match[1];
