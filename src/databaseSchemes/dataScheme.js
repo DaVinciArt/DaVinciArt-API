@@ -103,6 +103,10 @@ export class Collection extends Model {}
                 type: DataTypes.TEXT,
                 allowNull: false
             },
+            views:{
+              type: DataTypes.INTEGER,
+              allowNull: true
+            },
             author_id: {
                 type: DataTypes.INTEGER,
                 references:{

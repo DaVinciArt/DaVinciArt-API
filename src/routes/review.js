@@ -1,8 +1,7 @@
 import {Router} from "express";
-import {login, refresh, register} from "../middleware/auth.js";
-import {uploadSingle} from '../middleware/fileUpload.js'
-export const authRouter = Router();
+import {register} from "../middleware/auth.js"
+import {getAllComments} from "../middleware/review.js";
+export const reviewRouter = Router();
 
-authRouter.post('/sendReview', uploadSingle,register);
-authRouter.post('/login',login);
-authRouter.post('/refresh',refresh);
+reviewRouter.post('/sendReview',register);
+reviewRouter.get('/:userId/getAll', getAllComments)

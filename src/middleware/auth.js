@@ -11,6 +11,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '../config/.env') })
+
+
+
+export async function verifyEmail(req,res){
+
+}
 export async function register(req,res){
         let avatar = ' '
         const path = req.file.path;
@@ -67,9 +73,9 @@ export function refresh(req,res){
 
         const accessToken = jwt.sign(user, process.env.SECRET, { expiresIn: '1h' });
 
-        res.json({ accessToken: accessToken });
+        return res.json({ accessToken: accessToken });
     } catch (error) {
-        res.status(403).send('Invalid Refresh Token');
+        return res.status(403).send('Invalid Refresh Token');
     }
 }
 

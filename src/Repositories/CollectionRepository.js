@@ -62,9 +62,15 @@ export class CollectionRepository {
         return true;
     }
 
-    static async update(username, updatedBody) {
+    static async topFiveByPopularity(){
+        return await Collection.findAll({
+            order:[['views', 'DESC']],
+            limit:5
+        })
+    }
+    static async update(id, updatedBody) {
 
-        const collection = this.search(username);
+        const collection = this.search(id);
         if (!collection) return false;
         const deconstructedBody = {...updatedBody};
 

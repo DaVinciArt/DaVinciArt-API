@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 import {collectionRouter} from "./routes/collectionRouter.js";
 import cookieParser from 'cookie-parser';
 import {v2 as cloudinary} from 'cloudinary';
+import {reviewRouter} from "./routes/review.js";
 
 dotenv.config();
 cloudinary.config({
@@ -61,6 +62,7 @@ app.use((req,res,next) =>
 app.use('/auth', authRouter);
 app.use('/user', authToken, userRouter);
 app.use('/user/collection', authToken, collectionRouter)
+app.use('reviews',authToken,reviewRouter)
 
 app.listen(PORT, ()=> console.log(`Running server on ${PORT}`));
 
