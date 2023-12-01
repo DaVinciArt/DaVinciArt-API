@@ -51,7 +51,7 @@ export async function login(req, res){
     if(!username || !password) return res.status(401).send('Cannot authorise')
     if(req.session.user) return res.status(201).send('Already logged in')
 
-    let user = await UserRepository.getUserByNameOrId(username);
+    let user = await UserRepository.getUserByName(username);
 
     if(!user) return res.status(401).send('Invalid username')
 

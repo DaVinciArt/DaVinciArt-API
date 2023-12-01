@@ -17,6 +17,11 @@ export async function createCollection(req,res){
     return res.sendStatus(200)
 }
 
+export async function editCollection(req,res){
+    const collectionId =req.params.collection_id;
+    const collection = await CollectionRepository.getCollectionWithPainting(collectionId)
+
+}
 export async function getAllById(req, res){
     const body = await CollectionRepository.getCollectionByUserId(req.params.userId)
     if(!body) return res.sendStatus(404)
@@ -25,7 +30,7 @@ export async function getAllById(req, res){
 }
 
 export async function getWithPainting(req,res){
-    const body = await CollectionRepository.getCollectionWithPainting(req.params.userId)
+    const body = await CollectionRepository.getCollectionWithPainting(req.params.collectionId)
     if(!body) return res.sendStatus(404)
     console.log(`Body: ${body}`)
     return res.status(200).json(body)

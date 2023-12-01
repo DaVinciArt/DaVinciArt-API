@@ -6,5 +6,6 @@ export const collectionRouter = Router();
 
 
 collectionRouter.get('/:userId/getAll',getAllById)
-collectionRouter.get('/:userId/get',getWithPainting)
+collectionRouter.get('/:collectionId/get',getWithPainting)
 collectionRouter.post('/:userId/add',uploadAny,createCollection);
+collectionRouter.post('/:collectionId/edit', uploadAny,)

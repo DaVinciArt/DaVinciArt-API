@@ -47,7 +47,7 @@ export class CollectionRepository {
 
 
     static async getCollectionWithPainting(id) {
-        return (await this.searchWithInclude({id},{Painting}));
+        return (await this.searchWithInclude(id,{Painting}));
     }
 
     static async getCollectionByUserId(userId){
@@ -91,12 +91,14 @@ export class CollectionRepository {
         }
         return collection.dataValues;
     }
-    static async searchWithInclude(where, include) {
+    static async searchWithInclude(id) {
         let collection = {};
         try {
             collection = await Collection.findOne({
-                where,
-                include
+                where:{
+                    id:id
+                },
+                include: [Painting]
             })
         } catch {
             console.log('Cannot find collection with this credentials');
