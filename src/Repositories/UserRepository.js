@@ -1,4 +1,5 @@
 import {User} from "../databaseSchemes/dataScheme.js";
+import {Op} from "sequelize";
 
 export class UserRepository {
     static async create(body) {
@@ -62,32 +63,28 @@ export class UserRepository {
     static async delete(username) {
         let user = this.search(username);
         if (!user) return false;
-        await User.destroy({
-            where:{
-                username:username
-            }
-        });
+        await user.destroy();
         return true;
     }
 
     static async update(username, updatedBody) {
 
-        let user = await this.search(username);
+        const user = this.search(username);
         if (!user) return false;
-        await User.update({...updatedBody},{
-            where:{
-                username: username
-            }
+        const deconstructedBody = {...updatedBody};
+
+        user.update({
+            deconstructedBody
         })
         return true;
     }
 
-    static async search(username) {
+    static async search(conditions) {
         let user = {};
         try {
             user = await User.findOne({
                 where: {
-                    username: username
+                    ...conditions
                 }
             })
         } catch {
