@@ -1,5 +1,5 @@
-import {Collection, Painting} from "../databaseSchemes/dataScheme.js";
 import {Op} from "sequelize";
+import {Collection, Painting} from "../databaseSchemes/dataScheme.js";
 
 export class CollectionRepository {
     static async create(body) {
@@ -103,7 +103,9 @@ export class CollectionRepository {
                 where:{
                     id:id
                 },
-                include: [Painting]
+                include: [{
+                model: Painting,
+                }]
             })
         } catch {
             console.log('Cannot find collection with this credentials');

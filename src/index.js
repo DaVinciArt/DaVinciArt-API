@@ -1,4 +1,4 @@
-import {sequelize} from './databaseSchemes/dataScheme.js';
+import {sequelize} from './databaseSchemes/config.js';
 import express from "express";
 import {authRouter} from "./routes/authRouter.js";
 import {userRouter} from './routes/userRouter.js';
@@ -12,13 +12,19 @@ import {v2 as cloudinary} from 'cloudinary';
 import {reviewRouter} from "./routes/review.js";
 import {paymentRouter} from "./routes/paymentRouter.js";
 
+
+
+process.on('unhandledRejection', (error) => {
+    console.log('Unhandled Promise Rejection:', error);
+    process.exit(1); // Optional: exit the process after logging the error
+});
 dotenv.config();
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API,
-    api_secret: process.env.CLOUDINARY_SECRET,
-    debug: true
-});
+        cloud_name: process.env.CLOUDINARY_NAME,
+        api_key: process.env.CLOUDINARY_API,
+        api_secret: process.env.CLOUDINARY_SECRET,
+        debug: true
+    });
 
 export default cloudinary
 try {
@@ -28,9 +34,15 @@ try {
     console.error('Unable to connect to the databaseSchemes:', error);
 }
 
-sequelize.sync({ alter: true }).then(() => {
-    console.log('Models are synced with the database');
-});
+try{
+    sequelize.sync({alter: true}).then(() => {
+        console.log('Models are synced with the database');
+    });
+}catch (err){
+    console.log(err)
+}
+
+
 
 const app = express();
 
@@ -67,5 +79,3 @@ app.use('/reviews',authToken,reviewRouter)
 app.use('/payment',authToken, paymentRouter)
 
 app.listen(PORT, ()=> console.log(`Running server on ${PORT}`));
-
-

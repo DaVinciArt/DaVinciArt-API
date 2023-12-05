@@ -1,4 +1,3 @@
-import {collectionRouter} from "../routes/collectionRouter.js";
 import {CollectionRepository} from "../Repositories/CollectionRepository.js";
 import {UserRepository} from "../Repositories/UserRepository.js";
 
