@@ -3,15 +3,16 @@ import express from "express";
 import {authRouter} from "./routes/authRouter.js";
 import {userRouter} from './routes/userRouter.js';
 import session from "express-session";
-import {authToken} from "./middleware/auth.js";
+import {authToken} from "./handlers/authToken.js";
 import passport from "passport";
 import dotenv from 'dotenv';
-import {collectionRouter} from "./routes/collectionRouter.js";
+import {userCollectionRouter} from "./routes/userCollectionRouter.js";
 import cookieParser from 'cookie-parser';
 import {v2 as cloudinary} from 'cloudinary';
 import {reviewRouter} from "./routes/review.js";
 import {paymentRouter} from "./routes/paymentRouter.js";
-import {entryParamExports} from "./userIdParamHandle.js";
+import {entryParamExports} from "./handlers/userIdParamHandle.js";
+import {collectionRouter} from "./routes/collectionRouter.js";
 
 
 process.on('unhandledRejection', (error) => {
@@ -74,7 +75,8 @@ app.use((req,res,next) =>
 })
 app.use('/auth', authRouter);
 app.use('/user', authToken, userRouter);
-app.use('/user/:userId/collection', authToken,entryParamExports, collectionRouter)
+app.use('/user/:userId/collection', authToken,entryParamExports, userCollectionRouter)
+app.use('/collection', collectionRouter)
 app.use('/reviews',authToken,reviewRouter)
 app.use('/payment',authToken, paymentRouter)
 

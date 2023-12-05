@@ -20,14 +20,16 @@ export class UserRepository {
     }
 
 
-    static async getUserWithParams(body){
+    static async getUserWithParams(body, include=[]){
         let user = {};
         try {
             user = await User.findOne({
-                where:[{...body}],
+                where:{...body},
+                include: include,
                 returning:true
             })
-        } catch {
+        } catch(err) {
+            console.log(err)
             console.log('Cannot find user with this parameters');
             return null;
         }

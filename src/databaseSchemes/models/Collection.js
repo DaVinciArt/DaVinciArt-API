@@ -41,9 +41,10 @@ export class Collection extends Model {
                 type: DataTypes.ARRAY(DataTypes.TEXT),
                 allowNull: false
             },
-            status: {
-                type: DataTypes.ENUM('selling', 'on hold'),
+            onSale: {
+                type: DataTypes.BOOLEAN,
                 allowNull: false,
+                defaultValue: false
             },
             price: {
                 type: DataTypes.FLOAT,

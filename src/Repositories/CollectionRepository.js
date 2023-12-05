@@ -1,4 +1,4 @@
-import {Collection, Painting, User} from "../databaseSchemes/dataScheme.js";
+import {Collection, Painting} from "../databaseSchemes/dataScheme.js";
 
 export class CollectionRepository {
     static async create(body) {
@@ -45,7 +45,7 @@ export class CollectionRepository {
 
 
     static async getCollectionWithPainting(id) {
-        return (await this.searchWithInclude(id,{Painting}));
+        return (await this.searchWithInclude(id));
     }
 
     static async getCollectionByUserId(userId){
@@ -62,6 +62,9 @@ export class CollectionRepository {
 
     static async topFiveByPopularity(){
         return await Collection.findAll({
+            where:{
+                on_sale: true
+            },
             order:[['views', 'DESC']],
             limit:5
         })
@@ -78,11 +81,12 @@ export class CollectionRepository {
         })
     }
 
-    static async search(conditions = {}) {
+    static async search(conditions = {}, includes = []) {
         let collection = {};
         try {
             collection = await Collection.findOne({
                 where: {...conditions},
+                include: includes
             })
         } catch {
             console.log('Cannot find collection with this credentials');

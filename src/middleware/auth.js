@@ -29,7 +29,7 @@ export async function register(req,res){
         }
         const {username, password} = req.body;
         if(username && password){
-            const userExists = await UserRepository.getUserWithParams(username)
+            const userExists = await UserRepository.getUserWithParams({username})
             if(userExists) return res.status(404).send('Username already exists')
             const registerBody = {
                 ...req.body,
@@ -111,18 +111,7 @@ async function checkPassword(inputPassword, dbUser, res){
         return res.status(401).send('Invalid password');
     }
 }
-export function authToken(req,res,next){
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if(token == null) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.SECRET, (err, user) => {
-        if(err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    })
-
-}
 export async function changePassword(req, res){
     const user = await UserRepository.update({password: hashPassword(req.body.password)})
     if(user)

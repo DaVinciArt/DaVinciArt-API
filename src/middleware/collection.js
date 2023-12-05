@@ -2,6 +2,7 @@ import {CollectionRepository} from "../Repositories/CollectionRepository.js";
 import cloudinary from '../index.js'
 import * as fs from "fs";
 import {UserRepository} from "../Repositories/UserRepository.js";
+import {Painting} from "../databaseSchemes/dataScheme.js";
 
 export async function createCollection(req,res){
     const collectionBody = await createCollectionBody(req)
@@ -36,20 +37,22 @@ export async function getTopFiveCollections(req,res){
     return res.status(200).json(collections)
 }
 export async function getAllById(req, res){
-    const body = await CollectionRepository.getCollectionByUserId(req.params.userId)
+    const body = await CollectionRepository.getCollectionByUserId(req.routeParams.userId)
     if(!body) return res.sendStatus(404)
     return res.status(200).json(body)
 }
 
 export async function getWithPainting(req,res){
-    const body = await CollectionRepository.getCollectionWithPainting(req.params.collectionId)
+    const userId = req.routeParams.userId
+    const collectionId = req.params.collectionId
+    const body = await CollectionRepository.search({collectionId,author_id:userId}, [Painting])
     if(!body) return res.sendStatus(404)
     console.log(`Body: ${body}`)
     return res.status(200).json(body)
 }
 async function createCollectionBody(req) {
-    const userId = req.params.userId;
-    const {username} = await UserRepository.getUserById(userId, ['username'])
+    const userId = req.routeParams.userId;
+    const {username} = await UserRepository.getUserWithParams({id: userId})
     const tags = req.body.tags.split(' ')
     let collection = {
         ...req.body,
@@ -58,7 +61,7 @@ async function createCollectionBody(req) {
         author_name: username,
         price: +req.body.price,
         paintings: req.paintings? req.paintings: [],
-        status: 'on hold',
+        onSale: false,
         preview_image_url: req.body.preview_image_url ? req.body.preview_image_url: ' ',
         views: req.body.views
     }
@@ -79,8 +82,6 @@ async function createCollectionBody(req) {
 }
 
 async function editCollectionBody(req) {
-    const userId = req.routeParams.userId;
-    const {username} = await UserRepository.getUserById(userId, ['username'])
     let collection = {
         ...req.body
     }
