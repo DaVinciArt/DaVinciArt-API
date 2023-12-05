@@ -23,17 +23,16 @@ export class UserRepository {
     static async getUserByNameOrId(username, id = undefined) {
         return (await this.search({username, id}));
     }
-    static async getUserById(id,attributes){
+    static async getUserById(id){
         let user = {};
         try {
             user = await User.findOne({
-                where: {
-                    id
-                },
-                attributes: attributes
+                where:{
+                    id: id,
+                }
             })
         } catch {
-            console.log('Cannot find user with such username');
+            console.log('Cannot find user with this id');
             return null;
         }
         if (!user){
@@ -75,11 +74,12 @@ export class UserRepository {
 
         let user = await this.search(username);
         if (!user) return null;
-        return await User.update({...updatedBody},{
+        return (await User.update({...updatedBody},{
             where:{
                 username: username
-            }
-        })
+            },
+            returning: true
+        }))[1][0]
     }
 
     static async search(username) {

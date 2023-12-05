@@ -5,8 +5,8 @@ import {getAllById} from '../middleware/collection.js'
 export const collectionRouter = Router();
 
 
-collectionRouter.get('/:userId/getAll',getAllById)
+collectionRouter.get('/getAll',getAllById)
 collectionRouter.get('/:collectionId/get',getWithPainting)
-collectionRouter.post('/:userId/add',uploadAny,createCollection);
+collectionRouter.post('/add',uploadAny,createCollection);
 collectionRouter.post('/:collectionId/edit', uploadAny, editCollection)
 collectionRouter.get('/getTopFive',getTopFiveCollections)

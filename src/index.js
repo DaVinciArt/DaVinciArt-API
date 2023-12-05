@@ -62,6 +62,10 @@ app.use(
 );
 app.use((req,res,next) =>
 {
+    if(req.params.userId){
+        console.log(req.params.userId)
+        req.userId = req.params.userId
+    }
     console.log(`${req.method}:${req.url} from ${req.ip} ${req.hostname}`);
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -74,7 +78,7 @@ app.use((req,res,next) =>
 })
 app.use('/auth', authRouter);
 app.use('/user', authToken, userRouter);
-app.use('/user/collection', authToken, collectionRouter)
+app.use('/user/:userId/collection', authToken, collectionRouter)
 app.use('/reviews',authToken,reviewRouter)
 app.use('/payment',authToken, paymentRouter)
 

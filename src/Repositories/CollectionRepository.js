@@ -1,5 +1,4 @@
-import {Op} from "sequelize";
-import {Collection, Painting} from "../databaseSchemes/dataScheme.js";
+import {Collection, Painting, User} from "../databaseSchemes/dataScheme.js";
 
 export class CollectionRepository {
     static async create(body) {
@@ -69,23 +68,21 @@ export class CollectionRepository {
     }
     static async update(id, updatedBody) {
 
-        const collection = this.search(id);
-        if (!collection) return false;
-        const deconstructedBody = {...updatedBody};
-
-        collection.update({
-            deconstructedBody
+        const collection = await this.search({id: id});
+        if (!collection) return null;
+        return await Collection.update({...updatedBody},{
+            where:{
+                id
+            },
+            returning: true
         })
-        return true;
     }
 
-    static async search(conditions = [0]) {
+    static async search(conditions = {}) {
         let collection = {};
         try {
             collection = await Collection.findOne({
-                where: {
-                    [Op.or]: conditions
-                }
+                where: {...conditions},
             })
         } catch {
             console.log('Cannot find collection with this credentials');

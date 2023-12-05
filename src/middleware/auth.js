@@ -124,8 +124,9 @@ export function authToken(req,res,next){
 
 }
 export async function changePassword(req, res){
-    if(await UserRepository.update({password: hashPassword(req.body.password)}))
-        return res.status(201).send('Updated successfully');
+    const user = await UserRepository.update({password: hashPassword(req.body.password)})
+    if(user)
+        return res.status(201).json({accessToken: createTokens(user,res)});
     return res.status(404).send('Cannot update password');
 }
 

@@ -13,9 +13,13 @@ export async function createCollection(req,res){
 }
 
 export async function editCollection(req,res){
-    const collectionId =req.params.collection_id;
-    const body = await createCollectionBody()
-    if(await CollectionRepository.update(collectionId, body)) return res.sendStatus(200)
+    const collectionId =req.params.collectionId;
+    const userId = req.userId;
+    console.log(userId)
+    const body = await editCollectionBody(req)
+    console.log({...body})
+    const collection = await CollectionRepository.update(collectionId, body)
+    if(collection) return res.status(200).json({collection: collection[1][0]})
     return res.sendStatus(404)
 }
 
@@ -27,7 +31,6 @@ export async function getTopFiveCollections(req,res){
 export async function getAllById(req, res){
     const body = await CollectionRepository.getCollectionByUserId(req.params.userId)
     if(!body) return res.sendStatus(404)
-    console.log(`Body: ${body}`)
     return res.status(200).json(body)
 }
 
@@ -41,18 +44,19 @@ async function createCollectionBody(req) {
     const userId = req.params.userId;
     const {username} = await UserRepository.getUserById(userId, ['username'])
     const tags = req.body.tags.split(' ')
-    const collection = {
+    let collection = {
         ...req.body,
         tags: tags,
         author_id: userId,
         author_name: username,
         price: +req.body.price,
-        paintings: [],
+        paintings: req.paintings? req.paintings: [],
         status: 'on hold',
-        preview_image_url: ' '
+        preview_image_url: req.body.preview_image_url ? req.body.preview_image_url: ' ',
+        views: req.body.views
     }
-    console.log(req.files.length)
     if (req.files) {
+        console.log(req.files.length)
         await saveToCloud(req,collection)
         console.log(req.body.paintings)
         const fullFromedCollection = giveNameToImages(req.body.paintings, collection)
@@ -61,11 +65,29 @@ async function createCollectionBody(req) {
         for (let i = 0; i < fullFromedCollection.paintings.length; i++) {
             fullFromedCollection.paintings[i] = addDataToPainting(fullFromedCollection.paintings[i], data)
         }
-
-        console.log(`FullFormed ${JSON.stringify(fullFromedCollection)}`)
-        return fullFromedCollection
-
+        collection = fullFromedCollection
     }
+    console.log(`FullFormed ${JSON.stringify(collection)}`)
+    return collection
+}
+
+async function editCollectionBody(req) {
+    const userId = req.userId;
+    const {username} = await UserRepository.getUserById(userId, ['username'])
+    let collection = {
+        ...req.body
+    }
+    if (req.files) {
+        await saveToCloud(req,collection)
+        const fullFromedCollection = giveNameToImages(req.body.paintings, collection)
+        const data = {upload_date: fullFromedCollection.upload_date}
+        for (let i = 0; i < fullFromedCollection.paintings.length; i++) {
+            fullFromedCollection.paintings[i] = addDataToPainting(fullFromedCollection.paintings[i], data)
+        }
+        collection = fullFromedCollection
+    }
+    console.log(`FullFormed ${JSON.stringify(collection)}`)
+    return collection
 }
 
     function addDataToPainting(painting, data) {
