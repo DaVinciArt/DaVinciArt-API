@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 import {userCollectionRouter} from "./routes/userCollectionRouter.js";
 import cookieParser from 'cookie-parser';
 import {v2 as cloudinary} from 'cloudinary';
-import {reviewRouter} from "./routes/review.js";
+import {reviewRouter} from "./routes/reviewRouter.js";
 import {paymentRouter} from "./routes/paymentRouter.js";
 import {entryParamExports} from "./handlers/userIdParamHandle.js";
 import {collectionRouter} from "./routes/collectionRouter.js";

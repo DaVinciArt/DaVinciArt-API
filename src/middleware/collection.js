@@ -31,9 +31,18 @@ export async function deleteCollection(req,res){
     }
     res.status(404).send({message:'Cannot delete this collection'})
 }
+
+export async function getPopularCollections(req,res){
+    const page= req.query.page
+    const limit = req.query.limit
+    const collections = await CollectionRepository.getByPopularity(page,limit)
+    if (!collections) return res.status(404).send({message: "Cannot get collections"})
+    console.log(collections)
+    return res.status(200).json({collections: collections})
+}
 export async function getTopFiveCollections(req,res){
-    const collections = await CollectionRepository.topFiveByPopularity()
-    if (!collections) return res.status(404).send("There's less than 5 people on this website. Grow up")
+    const collections = await CollectionRepository.getByPopularity()
+    if (!collections) return res.status(404).send({message: "Cannot get collections"})
     return res.status(200).json(collections)
 }
 export async function getAllById(req, res){
@@ -45,14 +54,14 @@ export async function getAllById(req, res){
 export async function getWithPainting(req,res){
     const userId = req.routeParams.userId
     const collectionId = req.params.collectionId
-    const body = await CollectionRepository.search({collectionId,author_id:userId}, [Painting])
+    const body = await CollectionRepository.searchDV({id: collectionId,author_id:userId}, [Painting])
     if(!body) return res.sendStatus(404)
     console.log(`Body: ${body}`)
     return res.status(200).json(body)
 }
 async function createCollectionBody(req) {
     const userId = req.routeParams.userId;
-    const {username} = await UserRepository.getUserWithParams({id: userId})
+    const {username} = await UserRepository.getDataValue({id: userId})
     const tags = req.body.tags.split(' ')
     let collection = {
         ...req.body,
@@ -61,7 +70,7 @@ async function createCollectionBody(req) {
         author_name: username,
         price: +req.body.price,
         paintings: req.paintings? req.paintings: [],
-        onSale: false,
+        on_sale: false,
         preview_image_url: req.body.preview_image_url ? req.body.preview_image_url: ' ',
         views: req.body.views
     }

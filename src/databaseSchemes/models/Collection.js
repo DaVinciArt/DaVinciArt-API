@@ -41,7 +41,7 @@ export class Collection extends Model {
                 type: DataTypes.ARRAY(DataTypes.TEXT),
                 allowNull: false
             },
-            onSale: {
+            on_sale: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: false

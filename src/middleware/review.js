@@ -2,18 +2,26 @@ import {ReviewRepository} from "../Repositories/ReviewRepository.js";
 import {filterUserForToken} from "./auth.js";
 
 export async function addComment(req, res) {
-    console.log(req.params.userId)
-    const review = await ReviewRepository.create(+req.params.userId,req.body)
-    console.log(review)
+    await ReviewRepository.create(+req.params.userId,req.body)
     return res.status(201).send({message: 'Added commentary'})
 }
 
-
+export async function deleteComment(req,res){
+    const result = await ReviewRepository.delete(req.params.reviewId)
+    if(!result) return res.status(404).send({message:'Cannot delete comment'})
+    return res.status(200).send({message:'Comment deleted successfully'})
+}
 export async function getAllComments(req,res){
-    const reviews = await ReviewRepository.getAllReviews(+req.params.userId)
+    const reviews = await ReviewRepository.getAll(+req.params.userId)
     if(!reviews) return res.status(400).send('Cannot find reviews for this users')
     console.log(convertToResponse(reviews)[0])
     return res.status(201).json(convertToResponse(reviews))
+}
+
+export async function editComment(req,res){
+    const result = await ReviewRepository.updateText(req.params.reviewId, req.body)
+    if(!result) return res.status(404).send({message:'Cannot edit comment'})
+    return res.status(200).send({message:'Comment edited successfully'})
 }
 
 function convertToResponse(array){

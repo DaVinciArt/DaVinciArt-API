@@ -2,7 +2,7 @@ import {UserRepository} from "../Repositories/UserRepository.js";
 import {createTokens} from "./auth.js";
 
 export async function updateUser(req, res){
-    const user = (await UserRepository.update(req.body.username, req.body)).dataValues
+    const user = (await UserRepository.update({id:req.params.userId}, req.body)).dataValues
     console.log(user)
     if(user){
         const token = createTokens(user,res)
@@ -11,10 +11,11 @@ export async function updateUser(req, res){
     return res.status(401).send('Cannot update user');
 }
 export async function deleteUser(req, res){
-    if(await UserRepository.delete(req.body.username)) return res.status(201).send('Deleted successfully');
+    const id = req.body.userId
+    if(await UserRepository.delete({id})) return res.status(201).send('Deleted successfully');
     return res.status(404).send('Cannot delete this user');
 }
 export async function getUserByQuery(req,res){
-    const user = await UserRepository.getUserWithParams(req.body);
+    const user = await UserRepository.getDataValue(req.body);
     return res.status(201).json(user);
 }
