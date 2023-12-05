@@ -11,7 +11,7 @@ import cookieParser from 'cookie-parser';
 import {v2 as cloudinary} from 'cloudinary';
 import {reviewRouter} from "./routes/review.js";
 import {paymentRouter} from "./routes/paymentRouter.js";
-
+import {entryParamExports} from "./userIdParamHandle.js";
 
 
 process.on('unhandledRejection', (error) => {
@@ -62,10 +62,6 @@ app.use(
 );
 app.use((req,res,next) =>
 {
-    if(req.params.userId){
-        console.log(req.params.userId)
-        req.userId = req.params.userId
-    }
     console.log(`${req.method}:${req.url} from ${req.ip} ${req.hostname}`);
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -78,7 +74,7 @@ app.use((req,res,next) =>
 })
 app.use('/auth', authRouter);
 app.use('/user', authToken, userRouter);
-app.use('/user/:userId/collection', authToken, collectionRouter)
+app.use('/user/:userId/collection', authToken,entryParamExports, collectionRouter)
 app.use('/reviews',authToken,reviewRouter)
 app.use('/payment',authToken, paymentRouter)
 

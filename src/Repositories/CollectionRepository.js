@@ -54,7 +54,7 @@ export class CollectionRepository {
     }
 
     static async delete(id) {
-        let collection = this.search(null,id);
+        let collection = this.search({id});
         if (!collection) return false;
         await collection.destroy();
         return true;

@@ -20,37 +20,15 @@ export class UserRepository {
     }
 
 
-    static async getUserByNameOrId(username, id = undefined) {
-        return (await this.search({username, id}));
-    }
-    static async getUserById(id){
+    static async getUserWithParams(body){
         let user = {};
         try {
             user = await User.findOne({
-                where:{
-                    id: id,
-                }
+                where:[{...body}],
+                returning:true
             })
         } catch {
-            console.log('Cannot find user with this id');
-            return null;
-        }
-        if (!user){
-            return null;
-        }
-        return user.dataValues;
-    }
-
-    static async getUserByName(name){
-        let user = {};
-        try {
-            user = await User.findOne({
-                where: {
-                    username:name
-                }
-            })
-        } catch {
-            console.log('Cannot find user with such username');
+            console.log('Cannot find user with this parameters');
             return null;
         }
         if (!user){
@@ -60,7 +38,7 @@ export class UserRepository {
     }
 
     static async delete(username) {
-        let user = this.search(username);
+        let user = this.getUserWithParams({username});
         if (!user) return false;
         await User.destroy({
             where:{
@@ -72,7 +50,7 @@ export class UserRepository {
 
     static async update(username, updatedBody) {
 
-        let user = await this.search(username);
+        let user = await this.getUserWithParams({username});
         if (!user) return null;
         return (await User.update({...updatedBody},{
             where:{
@@ -80,23 +58,5 @@ export class UserRepository {
             },
             returning: true
         }))[1][0]
-    }
-
-    static async search(username) {
-        let user = {};
-        try {
-            user = await User.findOne({
-                where: {
-                    username: username
-                }
-            })
-        } catch {
-            console.log('Cannot find user with such username');
-            return null;
-        }
-        if (!user){
-            return null;
-        }
-        return user.dataValues;
     }
 }

@@ -15,7 +15,6 @@ export async function deleteUser(req, res){
     return res.status(404).send('Cannot delete this user');
 }
 export async function getUserByQuery(req,res){
-    const username = req.body.username;
-    const user = await UserRepository.getUserByNameOrId(username);
+    const user = await UserRepository.getUserWithParams(req.body);
     return res.status(201).json(user);
 }

@@ -6,7 +6,7 @@ import {changePassword} from "../middleware/auth.js";
 export const userRouter = Router();
 
 userRouter.get('/get',getUserByQuery);
-userRouter.post('/delete',deleteUser);
+userRouter.delete('/delete',deleteUser);
 userRouter.post('/update',updateUser);
 userRouter.post('changePassword',changePassword);
 

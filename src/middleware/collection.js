@@ -14,7 +14,7 @@ export async function createCollection(req,res){
 
 export async function editCollection(req,res){
     const collectionId =req.params.collectionId;
-    const userId = req.userId;
+    const userId = req.routeParams.userId;
     console.log(userId)
     const body = await editCollectionBody(req)
     console.log({...body})
@@ -23,6 +23,13 @@ export async function editCollection(req,res){
     return res.sendStatus(404)
 }
 
+export async function deleteCollection(req,res){
+    const collectionId = req.params.collection_id
+    if(await CollectionRepository.delete(collectionId)){
+        res.status(200).send({message: 'Deleted successfully'})
+    }
+    res.status(404).send({message:'Cannot delete this collection'})
+}
 export async function getTopFiveCollections(req,res){
     const collections = await CollectionRepository.topFiveByPopularity()
     if (!collections) return res.status(404).send("There's less than 5 people on this website. Grow up")
@@ -72,7 +79,7 @@ async function createCollectionBody(req) {
 }
 
 async function editCollectionBody(req) {
-    const userId = req.userId;
+    const userId = req.routeParams.userId;
     const {username} = await UserRepository.getUserById(userId, ['username'])
     let collection = {
         ...req.body

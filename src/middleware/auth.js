@@ -29,7 +29,7 @@ export async function register(req,res){
         }
         const {username, password} = req.body;
         if(username && password){
-            const userExists = await UserRepository.getUserByNameOrId(username)
+            const userExists = await UserRepository.getUserWithParams(username)
             if(userExists) return res.status(404).send('Username already exists')
             const registerBody = {
                 ...req.body,
@@ -57,7 +57,7 @@ export async function login(req, res){
     if(!username || !password) return res.status(401).send('Cannot authorise')
     if(req.session.user) return res.status(201).send('Already logged in')
 
-    let user = await UserRepository.getUserByName(username);
+    let user = await UserRepository.getUserWithParams({username});
 
     if(!user) return res.status(401).send('Invalid username')
 
