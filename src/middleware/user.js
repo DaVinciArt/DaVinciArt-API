@@ -1,9 +1,12 @@
 import {UserRepository} from "../Repositories/UserRepository.js";
+import {createTokens} from "./auth.js";
 
 export async function updateUser(req, res){
-    if(await UserRepository.update(req.body.username,req.body)){
-
-        return res.status(201).send('Updated user successfully');
+    const user = await UserRepository.update(req.body.username,req.body)
+    console.log(user)
+    if(user){
+        const token =createTokens(user,res)
+        return res.status(201).json({accessToken: token})
     }
     return res.status(401).send('Cannot update user');
 }

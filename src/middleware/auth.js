@@ -79,7 +79,7 @@ export function refresh(req,res){
     }
 }
 
-function createTokens(user, res){
+export function createTokens(user, res){
     const user_Token = filterUserForToken(user)
     const accessToken = jwt.sign(user_Token, process.env.SECRET, { expiresIn: '1h'})
     const refreshToken = jwt.sign(user_Token, process.env.REFRESH_SECRET)

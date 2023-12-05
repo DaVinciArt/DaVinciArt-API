@@ -74,13 +74,12 @@ export class UserRepository {
     static async update(username, updatedBody) {
 
         let user = await this.search(username);
-        if (!user) return false;
-        await User.update({...updatedBody},{
+        if (!user) return null;
+        return await User.update({...updatedBody},{
             where:{
                 username: username
             }
         })
-        return true;
     }
 
     static async search(username) {
