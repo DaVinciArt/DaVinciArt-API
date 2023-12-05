@@ -44,44 +44,59 @@ export class CollectionRepository {
     }
 
 
-    static async getCollectionWithPainting(id) {
-        return (await this.searchWithInclude(id));
-    }
-
     static async getCollectionByUserId(userId){
         return await this.searchForAll(userId)
 
     }
 
     static async delete(id) {
-        let collection = this.search({id});
+        let collection = this.searchDV({id});
         if (!collection) return false;
         await collection.destroy();
         return true;
     }
 
-    static async topFiveByPopularity(){
+    static async getByPopularity(page = 1, limit = 5){
+        const offset = (page-1)*limit
         return await Collection.findAll({
             where:{
                 on_sale: true
             },
             order:[['views', 'DESC']],
-            limit:5
+            limit:limit,
+            offset:offset,
         })
     }
     static async update(id, updatedBody) {
 
-        const collection = await this.search({id: id});
+        const collection = await this.searchDV({id: id});
         if (!collection) return null;
         return await Collection.update({...updatedBody},{
             where:{
-                id
+                id: id
             },
             returning: true
         })
     }
 
-    static async search(conditions = {}, includes = []) {
+    static async searchDV(conditions = {}, includes = []) {
+        let collection = {};
+        try {
+            collection = await Collection.findOne({
+                where: {...conditions},
+                include: includes
+            })
+        } catch {
+            console.log('Cannot find collection with this credentials');
+            return null;
+        }
+        if (!collection){
+            return null;
+        }
+        return collection.dataValues;
+    }
+
+    static async searchEntity(conditions = {}, includes = []) {
         let collection = {};
         try {
             collection = await Collection.findOne({
@@ -117,13 +132,13 @@ export class CollectionRepository {
         }
         return collection.dataValues;
     }
-    static async searchForAll(conditions = [0]) {
+    static async searchForAll(author_id) {
         let result = []
         let dbResponse = {}
         try {
             dbResponse = await Collection.findAll({
                 where: {
-                    author_id: conditions
+                    author_id
                 },
                 include: [{
                     model: Painting,

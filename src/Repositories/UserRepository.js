@@ -20,13 +20,13 @@ export class UserRepository {
     }
 
 
-    static async getUserWithParams(body, include=[]){
+    static async getDataValue(body, include=[]){
         let user = {};
         try {
+            console.log({...body})
             user = await User.findOne({
                 where:{...body},
-                include: include,
-                returning:true
+                include: include
             })
         } catch(err) {
             console.log(err)
@@ -36,27 +36,48 @@ export class UserRepository {
         if (!user){
             return null;
         }
+        console.log({...user})
         return user.dataValues;
     }
 
-    static async delete(username) {
-        let user = this.getUserWithParams({username});
+    static async getEntity(body, include=[]){
+        let dbResponse = {};
+        try {
+            console.log({...body})
+            dbResponse = await User.findOne({
+                where:{...body},
+                include: include
+            })
+        } catch(err) {
+            console.log(err)
+            console.log('Cannot find user with this parameters');
+            return null;
+        }
+        if (!dbResponse){
+            return null;
+        }
+        console.log({...dbResponse})
+        return dbResponse;
+    }
+
+    static async delete(body) {
+        let user = this.getDataValue(body);
         if (!user) return false;
         await User.destroy({
             where:{
-                username:username
+                ...body
             }
         });
         return true;
     }
 
-    static async update(username, updatedBody) {
+    static async update(searchBody, updatedBody) {
 
-        let user = await this.getUserWithParams({username});
+        const user = await this.getDataValue({...searchBody});
         if (!user) return null;
         return (await User.update({...updatedBody},{
             where:{
-                username: username
+                ...searchBody
             },
             returning: true
         }))[1][0]
