@@ -75,6 +75,7 @@ export class CollectionRepository {
             where:{
                 id
             },
+            include:[{model: Painting,}],
             returning: true
         }))[1][0]
     }

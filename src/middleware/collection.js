@@ -22,6 +22,7 @@ export async function editCollection(req,res){
     body.tags = body.tags.split(' ')
     console.log({...body})
     const collection = await CollectionRepository.update(collectionId, body)
+    console.log(JSON.stringify(collection))
     if(collection) return res.status(200).json({collection: collection})
     return res.sendStatus(404)
 }
