@@ -36,7 +36,6 @@ export class UserRepository {
         if (!user){
             return null;
         }
-        console.log({...user})
         return user.dataValues;
     }
 

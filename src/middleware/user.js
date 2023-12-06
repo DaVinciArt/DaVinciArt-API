@@ -19,3 +19,9 @@ export async function getUserByQuery(req,res){
     const user = await UserRepository.getDataValue(req.body);
     return res.status(201).json(user);
 }
+export async function getUser(req,res){
+    const user = await UserRepository.getDataValue({id: req.params.userId})
+    if(!user) return res.status(404).send({message: 'Can not find user in database'})
+    console.log()
+    return res.status(201).json({...user})
+}
