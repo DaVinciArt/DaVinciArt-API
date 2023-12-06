@@ -70,7 +70,7 @@ async function createCollectionBody(req) {
         author_name: username,
         price: +req.body.price,
         paintings: req.paintings? req.paintings: [],
-        on_sale: false,
+        on_sale: !(+req.body.price),
         preview_image_url: req.body.preview_image_url ? req.body.preview_image_url: ' ',
         views: req.body.views
     }
