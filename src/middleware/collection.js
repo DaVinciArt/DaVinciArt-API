@@ -36,15 +36,15 @@ export async function deleteCollection(req,res){
 }
 
 export async function getPopularCollections(req,res){
-    const page= req.query.page
-    const limit = req.query.limit
-    const collections = await CollectionRepository.getByPopularity(page,limit)
+    console.log({...req.query})
+    const {page, limit, ...searchQuery}= req.query
+    const collections = await CollectionRepository.getWithOffset(page,limit,searchQuery)
     if (!collections) return res.status(404).send({message: "Cannot get collections"})
     console.log(collections)
     return res.status(200).json({collections: collections})
 }
 export async function getTopFiveCollections(req,res){
-    const collections = await CollectionRepository.getByPopularity()
+    const collections = await CollectionRepository.getWithOffset()
     if (!collections) return res.status(404).send({message: "Cannot get collections"})
     return res.status(200).json(collections)
 }

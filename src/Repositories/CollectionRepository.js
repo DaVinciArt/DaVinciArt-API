@@ -56,10 +56,11 @@ export class CollectionRepository {
         return true;
     }
 
-    static async getByPopularity(page = 1, limit = 5){
+    static async getWithOffset(page = 1, limit = 5, seatchParams = {}){
         const offset = (page-1)*limit
         return await Collection.findAll({
             where:{
+                ...seatchParams,
                 on_sale: true
             },
             order:[['views', 'DESC']],
