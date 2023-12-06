@@ -86,6 +86,7 @@ export class CollectionRepository {
                 where: {...conditions},
                 include: includes
             })
+            if(conditions.author_id === req.user.author_id){}
             collection.views+=1
             await collection.save()
         } catch {
