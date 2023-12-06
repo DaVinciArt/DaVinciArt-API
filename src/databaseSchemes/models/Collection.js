@@ -39,7 +39,7 @@ export class Collection extends Model {
             },
             tags: {
                 type: DataTypes.ARRAY(DataTypes.TEXT),
-                allowNull: false
+                allowNull: true
             },
             on_sale: {
                 type: DataTypes.BOOLEAN,

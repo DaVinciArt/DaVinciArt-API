@@ -17,7 +17,7 @@ import {collectionRouter} from "./routes/collectionRouter.js";
 
 process.on('unhandledRejection', (error) => {
     console.log('Unhandled Promise Rejection:', error);
-    process.exit(1); // Optional: exit the process after logging the error
+    process.exit(1); 
 });
 dotenv.config();
 cloudinary.config({

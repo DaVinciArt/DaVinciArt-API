@@ -7,14 +7,13 @@ export class ReviewRepository {
         console.log(deconstructedBody)
         let review;
         try {
-            review = await Review.build({
+            review = await Review.create({
                 ...deconstructedBody
 
             });
         } catch (err) {
             console.log(err);
         }
-        await review.save();
         return review.dataValues;
     }
 
