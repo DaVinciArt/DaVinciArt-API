@@ -16,11 +16,13 @@ export async function createCollection(req,res){
 export async function editCollection(req,res){
     const collectionId =req.params.collectionId;
     const userId = req.routeParams.userId;
-    console.log(userId)
+    if (!(await UserRepository.getDataValue({id: userId}))) return res.status(404).send({message: 'Cannot find user'})
     const body = await editCollectionBody(req)
+    body.price = +body.price
+    body.tags = body.tags.split(' ')
     console.log({...body})
     const collection = await CollectionRepository.update(collectionId, body)
-    if(collection) return res.status(200).json({collection: collection[1][0]})
+    if(collection) return res.status(200).json({collection: collection})
     return res.sendStatus(404)
 }
 
