@@ -5,11 +5,12 @@ const exceptionMethods = 'GET'
 let pass = false
 export function authToken(req,res,next){
     exceptionRoutes.forEach((regEx) => {
-        if(regEx.test(`${req.method}:${req.url}`) || req.method === exceptionMethods)
-            if(!req.headers['authorization'])
+        if(regEx.test(`${req.method}:${req.url}`) || req.method === exceptionMethods) {
+            if (!!req.headers['authorization'])
                 pass=true
-    })
-    if(pass) return next();
+        }})
+    if(pass)
+        return next();
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if(token == null) return res.sendStatus(401);
