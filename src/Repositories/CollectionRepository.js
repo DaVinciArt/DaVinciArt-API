@@ -71,13 +71,12 @@ export class CollectionRepository {
 
         const collection = await this.searchDV({id: id});
         if (!collection) return null;
-        return (await Collection.update({...updatedBody},{
+        await Collection.update({...updatedBody},{
             where:{
                 id
             },
-            include:[{model: Painting,}],
-            returning: true
-        }))[1][0]
+        })
+        return await this.searchWithInclude(id)
     }
 
     static async searchDV(conditions = {}, includes = []) {
