@@ -89,7 +89,9 @@ export class CollectionRepository {
                     model:model
                 }]
             })
-            if(conditions.author_id !== optionalVars.id){
+            const authorId = +conditions.author_id
+            const authorIDfromJWT = +optionalVars.id
+            if(+authorIDfromJWT!==+authorId){
                 collection.views+=1
                 await collection.save()
             }
