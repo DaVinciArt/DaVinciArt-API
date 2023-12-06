@@ -86,6 +86,8 @@ export class CollectionRepository {
                 where: {...conditions},
                 include: includes
             })
+            collection.views+=1
+            await collection.save()
         } catch {
             console.log('Cannot find collection with this credentials');
             return null;
