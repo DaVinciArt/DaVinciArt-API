@@ -57,9 +57,8 @@ export async function getAllById(req, res){
 export async function getWithPainting(req,res){
     const userId = req.routeParams.userId
     const collectionId = req.params.collectionId
-    const body = await CollectionRepository.searchDV({id: collectionId,author_id:userId}, [Painting])
+    const body = await CollectionRepository.searchDV({id: collectionId,author_id:userId},Painting,req.user)
     if(!body) return res.sendStatus(404)
-    console.log(`Body: ${body}`)
     return res.status(200).json(body)
 }
 async function createCollectionBody(req) {

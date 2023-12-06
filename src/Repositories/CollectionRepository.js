@@ -79,17 +79,22 @@ export class CollectionRepository {
         return await this.searchWithInclude(id)
     }
 
-    static async searchDV(conditions = {}, includes = []) {
+    static async searchDV(conditions = {}, model = Painting, optionalVars = {}) {
         let collection = {};
+        console.log({...conditions})
         try {
             collection = await Collection.findOne({
                 where: {...conditions},
-                include: includes
+                include: [{
+                    model:model
+                }]
             })
-            if(conditions.author_id === req.user.author_id){}
-            collection.views+=1
-            await collection.save()
-        } catch {
+            if(conditions.author_id !== optionalVars.id){
+                collection.views+=1
+                await collection.save()
+            }
+        } catch(err) {
+            console.log(err)
             console.log('Cannot find collection with this credentials');
             return null;
         }
