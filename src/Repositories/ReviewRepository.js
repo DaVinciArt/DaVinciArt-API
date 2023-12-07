@@ -9,10 +9,10 @@ export class ReviewRepository {
         try {
             review = await Review.create({
                 ...deconstructedBody
-
             });
         } catch (err) {
             console.log(err);
+            return null
         }
         return review.dataValues;
     }
