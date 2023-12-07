@@ -35,7 +35,7 @@ export class User extends Model {
                 allowNull: false,
             },
             balance: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: false
             }
         }, {sequelize, modelName: 'User', timestamps: false})
