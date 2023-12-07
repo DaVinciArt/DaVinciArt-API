@@ -121,7 +121,7 @@ export class CollectionRepository {
         if (!collection){
             return null;
         }
-        return collection.dataValues;
+        return collection;
     }
     static async searchWithInclude(id) {
         let collection = {};
