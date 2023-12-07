@@ -10,7 +10,7 @@ export async function addComment(req, res) {
 
 
 export async function deleteComment(req,res){
-    const result = await ReviewRepository.delete(req.params.reviewId)
+    const result = await ReviewRepository.delete({id: req.params.reviewId})
     if(!result) return res.status(404).send({message:'Cannot delete comment'})
     return res.status(200).send({message:'Comment deleted successfully'})
 }

@@ -35,7 +35,7 @@ export class ReviewRepository {
 
     static async delete(body) {
         try {
-            const result = await Review.destroy({
+            await Review.destroy({
                 where: {
                     ...body
                 }
