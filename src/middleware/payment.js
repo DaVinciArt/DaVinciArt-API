@@ -1,5 +1,6 @@
 import {CollectionRepository} from "../Repositories/CollectionRepository.js";
 import {UserRepository} from "../Repositories/UserRepository.js";
+import {createTokens} from "./auth.js";
 
 export async function buyCollection(req,res){
     const buyer = await UserRepository.getEntity({id: req.body.buyer_id})
@@ -23,5 +24,10 @@ export async function buyCollection(req,res){
         console.log(err)
         return res.status(404).send({message: 'Payment error'})
     }
-    return res.status(200).send({message:'Payed successfully'})
+    const dbUser = await UserRepository.getDataValue({id: req.body.buyer_id})
+    if(dbUser){
+        const token = createTokens(dbUser,res)
+        return res.status(201).json({accessToken: token})
+    }
+    return res.status(401).send('Cannot update user')
 }
