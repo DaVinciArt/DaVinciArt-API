@@ -17,7 +17,6 @@ export async function deleteComment(req,res){
 export async function getAllComments(req,res){
     const reviews = await ReviewRepository.getAll(+req.params.userId)
     if(!reviews) return res.status(404).send('Cannot find reviews for this users')
-    console.log(convertToResponse(reviews)[0])
     return res.status(201).json(convertToResponse(reviews))
 }
 

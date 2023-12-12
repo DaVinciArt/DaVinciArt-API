@@ -1,18 +1,15 @@
 import jwt from "jsonwebtoken";
 
-const exceptionRoutes = [/\d+$/]
-const exceptionMethods = 'GET'
 let pass = false
 export function authToken(req,res,next){
-    exceptionRoutes.forEach((regEx) => {
-        if(regEx.test(`${req.method}:${req.url}`) || req.method === exceptionMethods) {
-            if (!req.headers['authorization'])
+    const authHeader = req.headers['authorization'];
+    console.log(!authHeader)
+        if(req.method === 'GET') {
+            if (!authHeader)
                 pass=true
-        }})
+        }
     if(pass)
         return next();
-    console.log('cock')
-    const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if(token == null) return res.sendStatus(401);
 

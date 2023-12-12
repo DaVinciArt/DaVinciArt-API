@@ -92,6 +92,9 @@ export class CollectionRepository {
             })
             const authorId = +conditions.author_id
             const authorIDfromJWT = +optionalVars.id
+            console.log(authorId)
+            console.log(authorIDfromJWT)
+            console.log(authorIDfromJWT!==authorId)
             if(authorIDfromJWT!==authorId){
                 collection.views+=1
                 await collection.save()
@@ -163,7 +166,6 @@ export class CollectionRepository {
             return null;
         }
         for (const collection in dbResponse){
-            console.log(collection)
             result.push(dbResponse[collection].dataValues)
         }
         return result

@@ -62,6 +62,8 @@ export async function getWithPainting(req,res){
     return res.status(200).json(body)
 }
 async function createCollectionBody(req) {
+    console.log(req.body.image)
+    console.log(req.files.length)
     const userId = req.routeParams.userId;
     const {username} = await UserRepository.getDataValue({id: userId})
     const tags = req.body.tags.split(' ')
@@ -78,9 +80,10 @@ async function createCollectionBody(req) {
     }
     if (req.files) {
         console.log(req.files.length)
+        console.log(req.files)
         await saveToCloud(req,collection)
-        console.log(req.body.paintings)
-        const fullFromedCollection = giveNameToImages(req.body.paintings, collection)
+        console.log(req.body.images)
+        const fullFromedCollection = giveNameToImages(req.body.image,req.files.length-1, collection)
         console.log(JSON.stringify(fullFromedCollection.paintings[0]))
         const data = {upload_date: fullFromedCollection.upload_date}
         for (let i = 0; i < fullFromedCollection.paintings.length; i++) {
@@ -98,7 +101,7 @@ async function editCollectionBody(req) {
     }
     if (req.files) {
         await saveToCloud(req,collection)
-        const fullFromedCollection = giveNameToImages(req.body.paintings, collection)
+        const fullFromedCollection = giveNameToImages(req.body.image,req.files.length-1, collection)
         const data = {upload_date: fullFromedCollection.upload_date}
         for (let i = 0; i < fullFromedCollection.paintings.length; i++) {
             fullFromedCollection.paintings[i] = addDataToPainting(fullFromedCollection.paintings[i], data)
@@ -117,9 +120,10 @@ async function editCollectionBody(req) {
         }
     }
 
-    function giveNameToImages(paintings, resultArr) {
-        for (let i = 0; i < paintings.length; i++) {
-            resultArr.paintings[i].name = paintings[i].name
+    function giveNameToImages(images,filesLength, resultArr) {
+    console.log(images[0])
+        for (let i = 0; i < filesLength; i++) {
+            resultArr.paintings[i].name = images[i]
         }
         return resultArr
     }
@@ -146,7 +150,7 @@ async function editCollectionBody(req) {
                 });
                 uploadPromises.push(uploadPromise);
             } else {
-                const match = /paintings\[(\d+)]\[image]/.exec(file.fieldname);
+                const match = /image\[(\d+)]/.exec(file.fieldname);
                 if (match) {
                     let uploadPromise = uploadPicture(file.path).then(imageUrl => {
                         const index = match[1];
@@ -164,7 +168,7 @@ async function editCollectionBody(req) {
                     collection.preview_image_url = result.imageUrl;
                 } else if (result.type === 'painting') {
                     collection.paintings[result.index] = {
-                        name: req.body.paintings[result.index].name,
+                        name: req.body.image[result.index],
                         image_url: result.imageUrl
                     };
                 }
