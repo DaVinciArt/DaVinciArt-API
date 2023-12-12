@@ -1,16 +1,9 @@
 
 import {Sequelize} from 'sequelize';
-import {fileURLToPath} from "url";
-import path from "path";
-import dotenv from "dotenv";
+import {POSTGRE_HOST, POSTGRE_PASS, POSTGRE_USERNAME} from "../GLOBALS.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, '../config/.env') })
-
-export const sequelize = new Sequelize('DaVinci',process.env.POSTGRE_USERNAME,process.env.POSTGRE_PASS, {
-    host: process.env.POSTGRE_HOST,
+export const sequelize = new Sequelize('DaVinci',POSTGRE_USERNAME,POSTGRE_PASS, {
+    host: POSTGRE_HOST,
     dialect: 'postgres',
     logging: false
 })

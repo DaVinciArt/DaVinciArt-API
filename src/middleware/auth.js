@@ -1,17 +1,9 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
 import {UserRepository} from "../Repositories/UserRepository.js";
 import cloudinary from '../index.js'
 import * as fs from "fs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, '../config/.env') })
-
+import {JWTSECRET, REFRESH_SECRET} from "../GLOBALS.js";
 
 
 export async function verifyEmail(req,res){
@@ -69,9 +61,9 @@ export function refresh(req,res){
     const {refreshToken} = req.body;
     if(!refreshToken) res.status(401).send('Access Denied: No token provided!');
     try {
-        const user = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+        const user = jwt.verify(refreshToken, REFRESH_SECRET);
 
-        const accessToken = jwt.sign(user, process.env.SECRET, { expiresIn: '1h' });
+        const accessToken = jwt.sign(user, JWTSECRET, { expiresIn: '1h' });
 
         return res.json({ accessToken: accessToken });
     } catch (error) {
@@ -81,8 +73,8 @@ export function refresh(req,res){
 
 export function createTokens(user, res){
     const user_Token = filterUserForToken(user)
-    const accessToken = jwt.sign(user_Token, process.env.SECRET, { expiresIn: '1h'})
-    const refreshToken = jwt.sign(user_Token, process.env.REFRESH_SECRET)
+    const accessToken = jwt.sign(user_Token, JWTSECRET, { expiresIn: '1h'})
+    const refreshToken = jwt.sign(user_Token, REFRESH_SECRET)
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: false,

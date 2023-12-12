@@ -1,9 +1,22 @@
-import {Router} from "express";
 import {login, refresh, register, verifyEmail} from "../middleware/auth.js";
 import {uploadSingle} from '../middleware/fileUpload.js'
-export const authRouter = Router();
 
-authRouter.post('/register', uploadSingle,register);
-authRouter.post('/login',login);
-authRouter.post('/refresh',refresh);
-authRouter.post('/verifyEmail',verifyEmail)
+export const authRoute = {
+    '/auth/register':{
+        method: 'POST',
+        middleware:[uploadSingle],
+        handler:register
+    },
+    '/auth/login':{
+        method: 'POST',
+        handler:login
+    },
+    '/auth/refresh':{
+        method: 'POST',
+        handler:refresh
+    },
+    '/auth/verifyEmail':{
+        method: 'POST',
+        handler:verifyEmail
+    }
+}

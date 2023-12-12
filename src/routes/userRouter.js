@@ -1,16 +1,41 @@
-import {Router} from "express";
 import {getUserByQuery, deleteUser, updateUser, getUser} from "../middleware/user.js";
 import {addComment, getAllComments} from "../middleware/review.js";
 import {changePassword} from "../middleware/auth.js";
 
-export const userRouter = Router();
-
-userRouter.get('/get',getUserByQuery);
-userRouter.delete('/:userId/delete',deleteUser);
-userRouter.put('/:userId/update',updateUser);
-userRouter.get('/:userId', getUser)
-
-userRouter.post('changePassword',changePassword);
-
-userRouter.get('/:userId/getAllComments', getAllComments)
-userRouter.post('/:userId/comment', addComment)
+export const userRoute = {
+    '/user/get':{
+        method:'GET',
+        middleware:[],
+        handler: getUserByQuery
+    },
+    '/user/:userId/delete':{
+        method:'DELETE',
+        middleware:[],
+        handler: deleteUser
+    },
+    '/user/:userId/update':{
+        method:'PUT',
+        middleware:[],
+        handler: updateUser
+    },
+    '/user/:userId':{
+        method:'GET',
+        middleware:[],
+        handler: getUser
+    },
+    '/user/changePassword':{
+        method:'POST',
+        middleware:[],
+        handler: changePassword
+    },
+    '/user/:userId/getAllComments':{
+        method:'GET',
+        middleware:[],
+        handler: getAllComments
+    },
+    '/user/:userId/comment':{
+        method:'POST',
+        middleware:[],
+        handler: addComment
+    }
+}

@@ -15,7 +15,7 @@ export async function createCollection(req,res){
 
 export async function editCollection(req,res){
     const collectionId =req.params.collectionId;
-    const userId = req.routeParams.userId;
+    const userId = req.params.userId;
     if (!(await UserRepository.getDataValue({id: userId}))) return res.status(404).send({message: 'Cannot find user'})
     const body = await editCollectionBody(req)
     body.price = +body.price
@@ -49,13 +49,13 @@ export async function getTopFiveCollections(req,res){
     return res.status(200).json(collections)
 }
 export async function getAllById(req, res){
-    const body = await CollectionRepository.getCollectionByUserId(req.routeParams.userId)
+    const body = await CollectionRepository.getCollectionByUserId(req.params.userId)
     if(!body) return res.sendStatus(404)
     return res.status(200).json(body)
 }
 
 export async function getWithPainting(req,res){
-    const userId = req.routeParams.userId
+    const userId = req.params.userId
     const collectionId = req.params.collectionId
     const body = await CollectionRepository.searchDV({id: collectionId,author_id:userId},Painting,req.user)
     if(!body) return res.sendStatus(404)
@@ -64,7 +64,7 @@ export async function getWithPainting(req,res){
 async function createCollectionBody(req) {
     console.log(req.body.image)
     console.log(req.files.length)
-    const userId = req.routeParams.userId;
+    const userId = req.params.userId;
     const {username} = await UserRepository.getDataValue({id: userId})
     const tags = req.body.tags.split(' ')
     let collection = {

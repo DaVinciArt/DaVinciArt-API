@@ -5,6 +5,7 @@ import {Painting} from "./models/Painting.js";
 import {Review} from "./models/Review.js";
 import {Purchase} from "./models/Purchase.js";
 
+
 User.initModel(sequelize);
 Review.initModel(sequelize);
 Collection.initModel(sequelize);

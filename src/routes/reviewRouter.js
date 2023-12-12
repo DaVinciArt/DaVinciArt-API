@@ -1,8 +1,23 @@
-import {Router} from "express";
 import {addComment, deleteComment, editComment, getAllComments} from "../middleware/review.js";
-export const reviewRouter = Router();
-
-reviewRouter.post('/sendReview/:userId',addComment);
-reviewRouter.get('/:userId/getAll', getAllComments)
-reviewRouter.delete('/:reviewId/delete',deleteComment)
-reviewRouter.put('/:reviewId/edit',editComment)
+export const reviewRoute = {
+    '/reviews/sendReview/:userId':{
+        method:'POST',
+        middleware:[],
+        handler: addComment
+    },
+    '/reviews/:userId/getAll':{
+        method:'GET',
+        middleware:[],
+        handler: getAllComments
+    },
+    '/reviews/:reviewId/delete':{
+        method:'DELETE',
+        middleware:[],
+        handler: deleteComment
+    },
+    '/reviews/:reviewId/edit':{
+        method:'PUT',
+        middleware:[],
+        handler: editComment
+    },
+}
