@@ -1,11 +1,9 @@
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken';
 import {UserRepository} from "../../Repositories/UserRepository.js";
 import cloudinary from '../../index.js'
 import * as fs from "fs";
-import {JWTSECRET, REFRESH_SECRET} from "../../GLOBALS.js";
 
-import JWTService from './JWTService.js';
+import {JWTService} from './JWTService.js';
 
 
 export async function verifyEmail(req,res){

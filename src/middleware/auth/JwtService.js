@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import {JWTSECRET, REFRESH_SECRET} from "../../GLOBALS.js";
 
-export default class JWTService {
+export class JWTService {
     static generateAccessToken(user) {
         const user_Token = this.filterUserForToken(user);
         return jwt.sign(user_Token, JWTSECRET, { expiresIn: '1h' });
