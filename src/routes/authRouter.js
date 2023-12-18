@@ -1,4 +1,4 @@
-import {login, refresh, register, verifyEmail} from "../middleware/auth.js";
+import {login, refresh, register, verifyEmail} from "../middleware/auth/auth.js";
 import {uploadSingle} from '../middleware/fileUpload.js'
 
 export const authRoute = {

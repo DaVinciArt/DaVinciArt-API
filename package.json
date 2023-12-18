@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^20.10.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.0",
@@ -23,7 +24,9 @@
     "express-session": "^1.17.3",
     "js": "^0.1.0",
     "jsonwebtoken": "^9.0.2",
+    "log": "^6.3.1",
     "multer": "^1.4.5-lts.1",
+    "open": "^9.1.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
@@ -32,7 +35,9 @@
     "pg-hstore": "^2.3.4",
     "request": "^2.88.2",
     "sequelize": "^6.35.1",
-    "typescript": "^5.2.2"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "supervisor": "^0.12.0"
