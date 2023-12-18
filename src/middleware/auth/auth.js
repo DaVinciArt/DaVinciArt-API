@@ -3,7 +3,7 @@ import {UserRepository} from "../../Repositories/UserRepository.js";
 import cloudinary from '../../index.js'
 import * as fs from "fs";
 
-import {JWTService} from './JWTService.js';
+import {JWTService} from './JwtService.js';
 
 
 export async function verifyEmail(req,res){
