@@ -1,5 +1,5 @@
 import {ReviewRepository} from "../Repositories/ReviewRepository.js";
-import {filterUserForToken} from "./auth.js";
+import {filterUserForToken} from "./auth/auth.js";
 
 export async function addComment(req, res) {
     const dbResponse = await ReviewRepository.create(+req.params.userId,req.body)

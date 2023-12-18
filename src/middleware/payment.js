@@ -1,6 +1,6 @@
 import {CollectionRepository} from "../Repositories/CollectionRepository.js";
 import {UserRepository} from "../Repositories/UserRepository.js";
-import {createTokens} from "./auth.js";
+import {createTokens} from "./auth/auth.js";
 
 export async function buyCollection(req,res){
     const buyer = await UserRepository.getEntity({id: req.body.buyer_id})

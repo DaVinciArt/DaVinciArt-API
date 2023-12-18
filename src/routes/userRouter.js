@@ -1,6 +1,6 @@
 import {getUserByQuery, deleteUser, updateUser, getUser} from "../middleware/user.js";
 import {addComment, getAllComments} from "../middleware/review.js";
-import {changePassword} from "../middleware/auth.js";
+import {changePassword} from "../middleware/auth/auth.js";
 
 export const userRoute = {
     '/user/get':{

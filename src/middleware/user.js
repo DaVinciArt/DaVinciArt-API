@@ -1,5 +1,5 @@
 import {UserRepository} from "../Repositories/UserRepository.js";
-import {createTokens} from "./auth.js";
+import {createTokens} from "./auth/auth.js";
 
 export async function updateUser(req, res){
     const user = (await UserRepository.update({id:req.params.userId}, req.body)).dataValues

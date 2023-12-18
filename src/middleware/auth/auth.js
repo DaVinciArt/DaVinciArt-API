@@ -1,9 +1,11 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
-import {UserRepository} from "../Repositories/UserRepository.js";
-import cloudinary from '../index.js'
+import {UserRepository} from "../../Repositories/UserRepository.js";
+import cloudinary from '../../index.js'
 import * as fs from "fs";
-import {JWTSECRET, REFRESH_SECRET} from "../GLOBALS.js";
+import {JWTSECRET, REFRESH_SECRET} from "../../GLOBALS.js";
+
+import JWTService from './JWTService.js';
 
 
 export async function verifyEmail(req,res){
@@ -57,14 +59,13 @@ export async function login(req, res){
 
 }
 
+
 export function refresh(req,res){
     const {refreshToken} = req.body;
     if(!refreshToken) res.status(401).send('Access Denied: No token provided!');
     try {
-        const user = jwt.verify(refreshToken, REFRESH_SECRET);
-
-        const accessToken = jwt.sign(user, JWTSECRET, { expiresIn: '1h' });
-
+        const user = JWTService.verifyRefreshToken(refreshToken);
+        const accessToken = JWTService.generateAccessToken(user);
         return res.json({ accessToken: accessToken });
     } catch (error) {
         return res.status(403).send('Invalid Refresh Token');
@@ -72,9 +73,8 @@ export function refresh(req,res){
 }
 
 export function createTokens(user, res){
-    const user_Token = filterUserForToken(user)
-    const accessToken = jwt.sign(user_Token, JWTSECRET, { expiresIn: '1h'})
-    const refreshToken = jwt.sign(user_Token, REFRESH_SECRET)
+    const accessToken = JWTService.generateAccessToken(user);
+    const refreshToken = JWTService.generateRefreshToken(user);
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: false,
@@ -101,6 +101,7 @@ async function checkPassword(inputPassword, dbUser, res){
     else {
         console.log(`User ${dbUser.username} tried to log in at ${new Date(Date.now()).toISOString()}`);
         return res.status(401).send('Invalid password');
+
     }
 }
 
